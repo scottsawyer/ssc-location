@@ -134,7 +134,11 @@ class SSC_Locations_Widget extends WP_Widget {
   		  foreach ($sites_list as $blog ) {
   		  	$site_options = get_site_socialmedia( $blog );
   		  	if ( is_array( $site_options )) {
-    		  	echo '<li><ul class="socialmedia">';
+    		  	echo '<li>';
+    		  	if ($instance['site_list'] == 'all' ) {
+    		  		echo '<h3><a href="' . $site_options[$blog['blog_id']]['path'] .'">' . $site_options[$blog['blog_id']]['name'] . '</a><h3>';
+    		  	}
+    		  	echo '<ul class="socialmedia">';
   		  	/*
   		  	print '<pre>';
   		  	print_r($site_options);
