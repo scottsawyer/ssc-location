@@ -136,7 +136,10 @@ class SSC_Locations_Widget extends WP_Widget {
   		  	if ( is_array( $site_options )) {
     		  	echo '<li>';
     		  	if ($instance['site_list'] == 'all' ) {
-    		  		echo '<h3><a href="' . $site_options[$blog['blog_id']]['path'] .'">' . $site_options[$blog['blog_id']]['name'] . '</a><h3>';
+    		  		echo '<h4><a href="' . get_blog_details( $blog['blog_id'])->path;
+    		  		echo '">';
+    		  		echo get_blog_details( $blog['blog_id'])->blogname;
+    		  		echo '</a><h4>';
     		  	}
     		  	echo '<ul class="socialmedia">';
   		  	/*
