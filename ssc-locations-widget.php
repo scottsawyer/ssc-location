@@ -8,10 +8,176 @@ Author: Scott Sawyer Consulting
 Author URI: http://www.scottsawyerconsulting.com/about
 License: GPL2
 */
-
+global $ssc_location_options;
+$ssc_location_options = array(
+  'settings' => array(
+    array(
+      'group_name' => 'location',
+      'group_title' => 'Location',
+      'group_description' => 'Enter the location information.',
+      'group_section' => 'ssc_location',
+      'group_fields' => array(
+        array(
+          'name' => 'phone',
+          'title' => 'Phone Number',
+          'type' => 'text',
+          ),
+        array(
+          'name' => 'street',
+          'title' => 'Street',
+          'type' => 'text',
+          ),
+        array(
+          'name' => 'city',
+          'title' => 'City',
+          'type' => 'text',
+          ),
+        array(
+          'name' => 'zip',
+          'title' => 'ZIP',
+          'type' => 'text',
+          ),
+        array(
+          'name' => 'state',
+          'title' => 'State',
+          'type' => 'select',
+          'options' => 'us_state_abbrevs_names',
+          ),
+        array(
+          'name' => 'lat',
+          'title' => 'Latitude',
+          'type' => 'hidden',
+          ),
+        array(
+          'name' => 'lon',
+          'title' => 'Longitude',
+          'type' => 'hidden',
+          ),
+        ),
+      ),
+    array(
+      'group_name' => 'socialmedia',
+      'group_title' => 'Social Media',
+      'group_description' => 'Add social media links.',
+      'group_section' => 'ssc_location',
+      'group_fields' => array(
+        array(
+          'name' => 'facebook',
+          'title' => 'Facebook',
+          'type' => 'text',
+          ),
+        array(
+          'name' => 'twitter',
+          'title' => 'Twitter',
+          'type' => 'text',
+          ),
+        array(
+          'name' => 'linkedin',
+          'title' => 'LinkedIn',
+          'type' => 'text',
+          ),
+        array(
+          'name' => 'google',
+          'title' => 'Google Plus',
+          'type' => 'text',
+          ),
+        array(
+          'name' => 'youtube',
+          'title' => 'YouTube',
+          'type' => 'text',
+          ),
+        array(
+          'name' => 'flickr',
+          'title' => 'Flickr',
+          'type' => 'text',
+          ),
+        ),
+      ),    
+    array(
+      'group_name' => 'business_hours',
+      'group_title' => 'Business Hours',
+      'group_description' => 'Enter the business hours',
+      'group_section' => 'ssc_location',
+      'group_fields' => array(
+        array(
+          'name' => 'monday_open',
+          'title' => 'Monday Open',
+          'type' => 'time',
+          ),
+        array(
+          'name' => 'monday_close',
+          'title' => 'Monday Close',
+          'type' => 'time',
+          ),
+        array(
+          'name' => 'tuesday_open',
+          'title' => 'Tuesday Open',
+          'type' => 'time',
+          ),
+        array(
+          'name' => 'tuesday_close',
+          'title' => 'Tuesday Close',
+          'type' => 'time',
+          ),
+        array(
+          'name' => 'wednesday_open',
+          'title' => 'Wednesday Open',
+          'type' => 'time',
+          ),
+        array(
+          'name' => 'wednesday_close',
+          'title' => 'Wednesday Close',
+          'type' => 'time',
+          ),
+        array(
+          'name' => 'thursday_open',
+          'title' => 'Thursday Open',
+          'type' => 'time',
+          ),
+        array(
+          'name' => 'thursday_close',
+          'title' => 'Thursday Close',
+          'type' => 'time',
+          ),
+        array(
+          'name' => 'friday_open',
+          'title' => 'Friday Open',
+          'type' => 'time',
+          ),
+        array(
+          'name' => 'friday_close',
+          'title' => 'Friday Close',
+          'type' => 'time',
+          ),
+        array(
+          'name' => 'saturday_open',
+          'title' => 'Saturday Open',
+          'type' => 'time',
+          ),
+        array(
+          'name' => 'saturday_close',
+          'title' => 'Saturday Close',
+          'type' => 'time',
+          ),
+        array(
+          'name' => 'sunday_open',
+          'title' => 'Sunday Open',
+          'type' => 'time',
+          ),
+        array(
+          'name' => 'sunday_close',
+          'title' => 'Sunday Close',
+          'type' => 'time',
+          ),
+        ),
+      ),
+    ),
+  );
 add_action( 'widgets_init', create_function('', 'return register_widget("SSC_Locations_Widget");') );
 add_shortcode( 'location', 'ssc_location_shortcode' );
-add_action( 'admin_init', 'ssc_admin_settings_api_init' );
+//add_action( 'admin_init', 'ssc_admin_settings_api_init' );
+require_once( sprintf( "%s/settings.php", dirname(__FILE__) ) );
+$ssc_location_settings = new SSC_Locations_Settings;
 
 function ssc_get_site_count(){
     global $wpdb;
@@ -22,11 +188,9 @@ function ssc_get_site_count(){
 
 function ssc_get_blog_list ( $args = NULL ) {
 	$sites_list = array();
-	
 	if ( function_exists( 'get_blog_list' )  ){
 		$sites_list = get_blog_list ( $args['offset'], $args['limit'] );
 	}
-
 	else {
 		if ( wp_is_large_network() == false && ( $args['limit'] >= 100 || $args['limit'] == 'all' )  ) {
 			if ( $args['limit'] == 'all' ) {
@@ -35,7 +199,6 @@ function ssc_get_blog_list ( $args = NULL ) {
 			else {
 				$site_args['limit'] = $args['limit'];
 			}
-
 			if ( array_key_exists('network_id', $args ) ) {
 				$sites_args['network_id'] = $args['network_id'];
 			}
@@ -65,6 +228,9 @@ function ssc_get_blog_list ( $args = NULL ) {
 	return $sites_list;
 }
 
+/*
+ * Widget Class
+ */
 class SSC_Locations_Widget extends WP_Widget {
 	public function __construct() {
 		parent::__construct(
@@ -384,7 +550,7 @@ function ssc_location_shortcode( $atts ) {
 /* 
  * settings functions
  */
-
+/*
 function ssc_admin_settings_api_init() {
 	global $ssc_options;
 	$options = $ssc_options;
@@ -416,7 +582,7 @@ function ssc_admin_settings_api_init() {
 	}
 }
 /**/
-
+/*
 function ssc_admin_settings_section_callback( $section_passed ) {
   echo '<p>' . $section_passed['title'] . '</p>';
 }
