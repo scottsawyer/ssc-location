@@ -8,172 +8,11 @@ Author: Scott Sawyer Consulting
 Author URI: http://www.scottsawyerconsulting.com/about
 License: GPL2
 */
-global $ssc_location_options;
-$ssc_location_options = array(
-  'settings' => array(
-    array(
-      'group_name' => 'location',
-      'group_title' => 'Location',
-      'group_description' => 'Enter the location information.',
-      'group_section' => 'ssc_location',
-      'group_fields' => array(
-        array(
-          'name' => 'phone',
-          'title' => 'Phone Number',
-          'type' => 'text',
-          ),
-        array(
-          'name' => 'street',
-          'title' => 'Street',
-          'type' => 'text',
-          ),
-        array(
-          'name' => 'city',
-          'title' => 'City',
-          'type' => 'text',
-          ),
-        array(
-          'name' => 'zip',
-          'title' => 'ZIP',
-          'type' => 'text',
-          ),
-        array(
-          'name' => 'state',
-          'title' => 'State',
-          'type' => 'select',
-          'options' => 'us_state_abbrevs_names',
-          ),
-        array(
-          'name' => 'lat',
-          'title' => 'Latitude',
-          'type' => 'hidden',
-          ),
-        array(
-          'name' => 'lon',
-          'title' => 'Longitude',
-          'type' => 'hidden',
-          ),
-        ),
-      ),
-    array(
-      'group_name' => 'socialmedia',
-      'group_title' => 'Social Media',
-      'group_description' => 'Add social media links.',
-      'group_section' => 'ssc_location',
-      'group_fields' => array(
-        array(
-          'name' => 'facebook',
-          'title' => 'Facebook',
-          'type' => 'text',
-          ),
-        array(
-          'name' => 'twitter',
-          'title' => 'Twitter',
-          'type' => 'text',
-          ),
-        array(
-          'name' => 'linkedin',
-          'title' => 'LinkedIn',
-          'type' => 'text',
-          ),
-        array(
-          'name' => 'google',
-          'title' => 'Google Plus',
-          'type' => 'text',
-          ),
-        array(
-          'name' => 'youtube',
-          'title' => 'YouTube',
-          'type' => 'text',
-          ),
-        array(
-          'name' => 'flickr',
-          'title' => 'Flickr',
-          'type' => 'text',
-          ),
-        ),
-      ),    
-    array(
-      'group_name' => 'business_hours',
-      'group_title' => 'Business Hours',
-      'group_description' => 'Enter the business hours',
-      'group_section' => 'ssc_location',
-      'group_fields' => array(
-        array(
-          'name' => 'monday_open',
-          'title' => 'Monday Open',
-          'type' => 'time',
-          ),
-        array(
-          'name' => 'monday_close',
-          'title' => 'Monday Close',
-          'type' => 'time',
-          ),
-        array(
-          'name' => 'tuesday_open',
-          'title' => 'Tuesday Open',
-          'type' => 'time',
-          ),
-        array(
-          'name' => 'tuesday_close',
-          'title' => 'Tuesday Close',
-          'type' => 'time',
-          ),
-        array(
-          'name' => 'wednesday_open',
-          'title' => 'Wednesday Open',
-          'type' => 'time',
-          ),
-        array(
-          'name' => 'wednesday_close',
-          'title' => 'Wednesday Close',
-          'type' => 'time',
-          ),
-        array(
-          'name' => 'thursday_open',
-          'title' => 'Thursday Open',
-          'type' => 'time',
-          ),
-        array(
-          'name' => 'thursday_close',
-          'title' => 'Thursday Close',
-          'type' => 'time',
-          ),
-        array(
-          'name' => 'friday_open',
-          'title' => 'Friday Open',
-          'type' => 'time',
-          ),
-        array(
-          'name' => 'friday_close',
-          'title' => 'Friday Close',
-          'type' => 'time',
-          ),
-        array(
-          'name' => 'saturday_open',
-          'title' => 'Saturday Open',
-          'type' => 'time',
-          ),
-        array(
-          'name' => 'saturday_close',
-          'title' => 'Saturday Close',
-          'type' => 'time',
-          ),
-        array(
-          'name' => 'sunday_open',
-          'title' => 'Sunday Open',
-          'type' => 'time',
-          ),
-        array(
-          'name' => 'sunday_close',
-          'title' => 'Sunday Close',
-          'type' => 'time',
-          ),
-        ),
-      ),
-    ),
-  );
+require_once( sprintf( "%s/widgets/widget.php", dirname(__FILE__) ) );
 add_action( 'widgets_init', create_function('', 'return register_widget("SSC_Locations_Widget");') );
+add_action( 'admin_footer', 'ssc_location_js' );
+add_action( 'wp_ajax_ssc_location_update_form', 'ssc_location_update_form_callback' );
+add_action( 'wp_ajax_nopriv_ssc_location_update_form', 'ssc_location_update_form_callback' );
 add_shortcode( 'location', 'ssc_location_shortcode' );
 //add_action( 'admin_init', 'ssc_admin_settings_api_init' );
 require_once( sprintf( "%s/settings.php", dirname(__FILE__) ) );
@@ -185,7 +24,6 @@ function ssc_get_site_count(){
     $site_count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM wp_blogs WHERE deleted = %d",$id));
     return $site_count;
 }
-
 function ssc_get_blog_list ( $args = NULL ) {
 	$sites_list = array();
 	if ( function_exists( 'get_blog_list' )  ){
@@ -220,7 +58,6 @@ function ssc_get_blog_list ( $args = NULL ) {
 			if ( array_key_exists('offset', $args ) ) {
 				$sites_args['offset'] = $args['offset'];
 			}
-
 			$sites_list = wp_get_sites( $sites_args );
 		}
 	}
@@ -228,174 +65,7 @@ function ssc_get_blog_list ( $args = NULL ) {
 	return $sites_list;
 }
 
-/*
- * Widget Class
- */
-class SSC_Locations_Widget extends WP_Widget {
-	public function __construct() {
-		parent::__construct(
-			'SSC_Locations_Widget', // Base ID
-			__('Locations Widget', 'text_domain'), // Name
-			array( 'description' => __('Display location settings', 'text_domain'), ) // args
-			);
-	}
 
-  public function widget( $args, $instance ) {
-  	$title = apply_filters( 'widget_title', $instance['title'] );
-  	if ( $instance['site_list'] == 'all' ){
-  		$sites_list = ssc_get_blog_list( array( 'offset' => 0, 'limit' => 'all' ) );  //get_blog_list( 0, 'all' ); //ssc_get_blog_list( array( 'offset' => 0, 'limit' => 'all' ) ;
-  	}
-  	else {
-  		$sites_list = array( array( 'blog_id' => $instance['site_list'] ) );
-  	}
-  	echo $args['before_widget'];
-  	if ( $title ) {
-  		echo $args['before_title'] . $title . $args['after_title'];
-  	}
-  	
-  	switch ( $instance['location_show_option'] ) {
-  		case 'address':
-  			//$site_options = get_site_contacts( $sites_list );
-  			echo '<ul class="site-list">';
-        foreach ( $sites_list as $blog ) {
-  	      echo '<li>';
-  	      $site_contacts = get_site_contacts( $blog['blog_id'] );	
-  	      echo '<h4><a href="' . $site_contacts[$blog['blog_id']]['path'] .'">' . $site_contacts[$blog['blog_id']]['name'] . '</a></h4>';
-   	      echo '<address>' . $site_contacts[$blog['blog_id']]['street'] . '<br>';
-   	      echo $site_contacts[$blog['blog_id']]['city'] . ', ' . $site_contacts[$blog['blog_id']]['state'] . ' ' . $site_contacts[$blog['blog_id']]['zip'] . '</address>';
-   	      echo '<p><a href="tel:' . $site_contacts[$blog['blog_id']]['phone'] . '">' . $site_contacts[$blog['blog_id']]['phone'] . '</a></p>';
-   	      if ( $instance['location_hours'] == 'show' ) {
-   	      	$site_hours = get_site_hours( $blog );
-            echo '<dl>';
-            $current_day = '';
-            foreach ( $site_hours[$blog['blog_id']] as $hours_val ) {
-       	      $day = explode('_', $hours_val['name'] );
-       	      $title = explode( ' ', $hours_val['title'] );
-      	      if ( $day[1] == 'open' ) {
-        	      echo '<dt>' . $title[0] . '</dt>';
-        	      if ( $hours_val['value'] ) {
-        		      echo '<dd>' . $hours_val['value'];
-        		      $current_day = $day[0];
-        	      }
-        	      else {
-        		      echo '<dd>Closed</dd>';
-        	      }
-              }
-              elseif ( $day[1] == 'close' && $day[0] == $current_day ) {
-        	      echo ' - ' . $hours_val['value'] .'</dd>';
-              }
-              else {
-        	      echo '</dd>';
-              }
-            }
-      /**/
-            echo '</dl>';
-   	      }
-    	    echo '</li>';
-        }
-        echo '</ul>';
-  			break;
-  		case 'socialmedia':
-  		  echo '<ul class="site-list">';
-  		  foreach ($sites_list as $blog ) {
-  		  	$site_options = get_site_socialmedia( $blog );
-  		  	if ( is_array( $site_options )) {
-    		  	echo '<li>';
-    		  	if ($instance['site_list'] == 'all' ) {
-    		  		echo '<h4><a href="' . get_blog_details( $blog['blog_id'])->path;
-    		  		echo '">';
-    		  		echo get_blog_details( $blog['blog_id'])->blogname;
-    		  		echo '</a><h4>';
-    		  	}
-    		  	echo '<ul class="socialmedia">';
-  		  	/*
-  		  	print '<pre>';
-  		  	print_r($site_options);
-  		  	print_r( $blog );
-  		  	print '</pre>';
-  		  	/**/
-    		  	foreach ($site_options[$blog['blog_id']] as $key => $value) {
-    		  		if ( is_array( $value ) ) {
-    		  			echo '<li><a href="' . $value['value'] . '" class="' . $value['name'] . '">' . $value['title'] . '</a></li>';
-    		  		}
-  	  	  	}
-  		    	echo '</ul></li>';
-  		    }
-  		}
-  	    echo '</ul>';
-  	    break;
-  	    /**/
-  	}
-
-    echo $args['after_widget'];
-  }
-   	public function form( $instance ) {
-		  if ( isset ( $instance['title'])) {
-		  	$title = $instance['title'];
-		  }
-		  else {
-		  	$title = __( 'Locations', 'text_domain' );
-		  }
-		  if ( isset ( $instance['location_show_option'] ) ) {
-		  	$location_show_option = $instance['location_show_option'];
-		  }
-		  else {
-		  	$location_show_option = 'address';
-		  }
-		  if ( isset ( $instance['location_hours'] ) ) {
-		  	$location_hours = $instance['location_hours'];
-		  }
-
-		  echo '<p><label for="' . $this->get_field_id( 'title' ) . '">';
-		  _e( 'Title:' );
-		  echo '</label>';
-		  echo '<input class="widefat" id="' . $this->get_field_id( 'title' ) . '" name="' .$this->get_field_name( 'title' ) . '" type="text" value="' . esc_attr( $title ) .'" /></p>';
-		  echo '<p><input type="radio" id="' . $this->get_field_id( 'location_show_option' ) . '" name="' . $this->get_field_name( 'location_show_option' ) . '" type="radio" value="address" ';
-		  if ( $location_show_option == 'address' ){
-		  	echo 'checked';
-		  }
-		  echo '><label for="' . $this->get_field_name( 'location_show_option' ) . '">Address</label>';
-		  echo ' <span class="ssc-show-hours"><input type="checkbox" name="' . $this->get_field_name( 'location_hours' ) .'" id="' . $this->get_field_id( 'location_hours' ) . '" value="show"';
-		  if ( $location_hours == 'show' ) {
-		  	echo 'checked';
-
-		  }
-		  echo '><label for="' . $this->get_field_id( 'location_hours' ) . '" ';
-		  echo '>Show Hours</label></p>';
-		  echo '<p><input type="radio" id="' . $this->get_field_id( 'location_show_option' ) . '" name="' . $this->get_field_name( 'location_show_option' ) . '" type="radio" value="socialmedia" ';
-		  if ( $location_show_option == 'socialmedia' ){
-		  	echo 'checked';
-		  }
-		  echo '>Social Media</p>';
-		  echo '<p><select id="' . $this->get_field_id( 'site_list' ) . '" name="' . $this->get_field_name( 'site_list' ) . '">';
-		  echo '<option value="all" ';
-		  if ( $instance['site_list'] == 'all' ) {
-		  	echo 'selected';
-		  }
-		  echo '>All</option>';
-		  $sites_list = ssc_get_blog_list( array( 'offset' => 0, 'limit' => 'all' ) );  //get_blog_list( 0, 'all' ); //ssc_get_blog_list( array( 'offset' => 0, 'limit' => 'all' ) ); //get_blog_list( 0, 'all' ); //ssc_get_blog_list( array( 'offset' => 0, 'limit' => 'all' ) );
-		  foreach ( $sites_list as $sites ) {
-		  	echo '<option value="' . $sites['blog_id'] . '" ';
-		  	if ( $instance['site_list'] == $sites['blog_id'] ) {
-		  		echo 'selected';
-		  	}
-		  	echo '>' . get_blog_details( $sites['blog_id'])->blogname . '</option>';
-		  	# code...
-		  }
-		  echo '</select></p>';
-
-
-
-	}
-	public function update( $new_instance, $old_instance ) {
-		$instance = array();
-		$instance['title'] = ( !empty( $new_instance['title'] ) ) ? strip_tags( $new_instance['title'] ) : '';
-		$instance['location_show_option'] = ( !empty( $new_instance['location_show_option'] ) ) ? strip_tags( $new_instance['location_show_option'] ) : 'address';
-		$instance['site_list'] = ( !empty( $new_instance['site_list'] ) ) ? strip_tags( $new_instance['site_list'] ) : 'all';
-		$instance['location_hours'] = ( !empty( $new_instance['location_hours'])) ? strip_tags( $new_instance['location_hours'] ) : '';
-		return $instance;
-	}
-}
 /*
  * Get Blog Vals
  */
@@ -405,11 +75,11 @@ function get_site_contacts( $site_list ) {
 	}
   foreach( $site_list as $site ){
    	$site_options[$site['blog_id']]['name'] = get_blog_details( $site['blog_id'])->blogname;
-    $site_options[$site['blog_id']]['street'] = get_blog_option( $site['blog_id'], 'ssc_admin_location_settings_street' );
-    $site_options[$site['blog_id']]['city'] = get_blog_option( $site['blog_id'], 'ssc_admin_location_settings_city' );
-    $site_options[$site['blog_id']]['state'] = get_blog_option( $site['blog_id'], 'ssc_admin_location_settings_state' );
-    $site_options[$site['blog_id']]['zip'] = get_blog_option( $site['blog_id'], 'ssc_admin_location_settings_zip' );
-    $site_options[$site['blog_id']]['phone'] = get_blog_option( $site['blog_id'], 'ssc_admin_location_settings_phone' );
+    $site_options[$site['blog_id']]['street'] = get_blog_option( $site['blog_id'], 'ssc_admin_contact_settings_street' );
+    $site_options[$site['blog_id']]['city'] = get_blog_option( $site['blog_id'], 'ssc_admin_contact_settings_city' );
+    $site_options[$site['blog_id']]['state'] = get_blog_option( $site['blog_id'], 'ssc_admin_contact_settings_state' );
+    $site_options[$site['blog_id']]['zip'] = get_blog_option( $site['blog_id'], 'ssc_admin_contact_settings_zip' );
+    $site_options[$site['blog_id']]['phone'] = get_blog_option( $site['blog_id'], 'ssc_admin_contact_settings_phone' );
     $site_options[$site['blog_id']]['path'] = get_blog_details( $site['blog_id'])->path;
   }
   return $site_options;
@@ -490,7 +160,6 @@ function ssc_location_shortcode( $atts ) {
 	else {
 		$site_list = array($sites);
 	}
-
 	ob_start();
 	if ( $map == 'show' ) {
 		$pageURL = 'http';
@@ -501,7 +170,9 @@ function ssc_location_shortcode( $atts ) {
     } else {
       $pageURL .= $_SERVER["SERVER_NAME"];
     }
-	  echo do_shortcode( '[osm_map marker_file="'.$pageURL.'/marker/marker.php?sites='.$sites.'" zoom="3" width="600" height="450" lat="34.37" long="-88.375" ]' );
+    if ( is_plugin_active( 'osm/osm.php' ) ) {
+  	  echo do_shortcode( '[osm_map marker_file="'.$pageURL.'/marker/marker.php?sites='.$sites.'" zoom="3" width="600" height="450" lat="34.37" long="-88.375" ]' );
+  	}
 	}
   echo '<ul class="site-list">';
   foreach ( $site_list as $blog ) {
@@ -547,6 +218,173 @@ function ssc_location_shortcode( $atts ) {
   return $output;
 }
 
+/*
+ * Update Marker Files
+ */
+function ssc_update_markers() {
+	$site_list = get_blog_list( 0, 'all' );
+	$current_blog = get_current_blog_id();
+	$file = '/marker/marker.txt';
+	$sitefile = '/marker/marker-' . $current_blog . '.txt'; 
+	foreach( $site_list as $site ){
+	  $site_options[$site['blog_id']]['phone'] = get_blog_option( $site['blog_id'], 'ssc_admin_contact_settings_phone' );
+	  $site_options[$site['blog_id']]['street'] = get_blog_option( $site['blog_id'], 'ssc_admin_contact_settings_street' );
+	  $site_options[$site['blog_id']]['city'] = get_blog_option( $site['blog_id'], 'ssc_admin_contact_settings_city' );
+	  $site_options[$site['blog_id']]['state'] = get_blog_option( $site['blog_id'], 'ssc_admin_contact_settings_state' );
+	  $site_options[$site['blog_id']]['zip'] = get_blog_option( $site['blog_id'], 'ssc_admin_contact_settings_zip' );
+  }
+  $header = "lat\tlon\ttitle\tdescription\ticon\ticonSize\ticonOffset\n";
+  $data = $header;
+  foreach ($site_options as $blog_id) {
+	  $address = 'street=' . str_replace( ' ', '+', $blog_id['street'] ) . '&state=' . str_replace(' ', '+', $blog_id['state'] ) . '&postalcode=' . urlencode( $blog_id['zip'] );
+	  $query = '&country=us&format=json&countrycodes=us&polygon=0&addressdetails=0&' . $address;
+  	$output = json_decode( file_get_contents( 'http://nominatim.openstreetmap.org/search?' . $query ) );
+	  if ( $output[0]->lat){
+  	  $data .= $output[0]->lat;
+  	  $data .= "\t";
+    	$data .= $output[0]->lon;
+	    $data .= "\t";
+  	  $data .= $blog_id['city'] ;
+	    $data .= "\t";
+	    $data .= '<div class="map-location"><address>'.$blog_id['street'] . '<br>'.$blog_id['state'] .' ' . $blog_id['zip'] .'</address><a href="tel:'.$blog_id['phone'].'">'.$blog_id['phone'].'</a></div>';
+  	  $data .= "\t";
+	    $data .= get_stylesheet_directory_uri() . '/logo.png';
+	    $data .= "\t";
+  	  $data .= '30,30';
+	    $data .= "\t";
+	    $data .= '0,-15';
+  	  $data .= "\n";
+	    if ( $site['blog_id'] == $current_blog ) {
+	    	$sitedate = $header;
+	  	  $sitedata .= $output[0]->lat;
+  	    $sitedata .= "\t";
+      	$sitedata .= $output[0]->lon;
+	      $sitedata .= "\t";
+	      $sitedata .= $blog_id['city'] ;
+  	    $sitedata .= "\t";
+	      $sitedata .= '<div class="map-location"><address>'.$blog_id['street'] . '<br>'.$blog_id['state'] .' ' . $blog_id['zip'] .'</address><a href="tel:'.$blog_id['phone'].'">'.$blog_id['phone'].'</a></div>';//<img src="http://www.scottsawyerconsulting.com/sites/all/themes/sscblck/logo.png"></div>';
+	      $sitedata .= "\t";
+	      $sitedata .= get_stylesheet_directory_uri() . '/logo.png';
+  	    $sitedata .= "\t";
+	      $sitedata .= '30,30';
+  	    $sitedata .= "\t";
+	      $sitedata .= '0,-15';
+  	    $sitedata .= "\n";
+	    }
+    }
+  }
+  $file_handle = fopen( $_SERVER['DOCUMENT_ROOT'] . $file, 'w' );
+  fwrite( $file_handle, $data );
+  fclose( $file_handle );
+  $file_handle = fopen( $_SERVER['DOCUMENT_ROOT'] . $sitefile, 'w' );
+  fwrite( $file_handle, $sitedata );
+  fclose( $file_handle );
+  return true;
+}
+
+/**
+ * JS for options form
+ */
+function ssc_location_js () {
+	?>
+	<script type="text/javascript">
+    jQuery(document).ready(function($){
+    	data = { 'action': 'ssc_location_update_form' };
+    	//$('form.ssc_location_contact #submit').addClass('contact_submit').removeAttr('id').removeAttr('name');
+
+    	$('form.ssc_location_contact .location_submit').click( function( event ) {
+    		data['form'] = 'form.ssc_location_contact';
+
+    		event.preventDefault();
+    		//alert( data['form']);
+    		/*
+    		var locationFields = new Array();
+    		locationFields['street'] = $('.ssc_admin_location_settings_street').val();
+    		locationFields['city'] = $('.ssc_admin_location_settings_city').val();
+    		locationFields['state'] = $('.ssc_admin_location_settings_state').val();
+    		locationFields['zip'] = $('.ssc_admin_location_settings_zip').val();
+    		alert ( locationFields['street'] );
+    		/**/
+     		data['street'] = $('.ssc_admin_contact_settings_street').val();
+    		data['city'] = $('.ssc_admin_contact_settings_city').val();
+    		data['state'] = $('.ssc_admin_contact_settings_state').val();
+    		data['zip'] = $('.ssc_admin_contact_settings_zip').val();
+    		//alert( data['zip'] );
+    		$('#wpwrap').addClass('progress');
+    		getLocation( data );
+    	});
+    	function formSubmit ( data ) {
+    		console.log( 'submit form' );
+    		$('form.ssc_location_contact').submit();
+    		/*
+    		$( data['form'] ).submit( function() {
+    			console.log('form submit');
+    		});
+/**/
+    	}
+    	function getLocation ( data ) {
+    		console.log( 'Ajax...' );
+      	$.post( ajaxurl, data, function( response )  {
+          if ( response ) {
+          	console.log( response );
+            var obj =  jQuery.parseJSON( response ); //response;
+            console.log(obj.type);
+            if ( obj.type == 'success' ) { 
+            	alert( obj.message );
+              //updateOptions( data, obj );
+              console.log( data['form'] );
+              //$('form.ssc_location').submit(); //$(data['form']).submit();
+              //return true;
+              formSubmit( data );
+            }
+            else {
+              //alert( 'There are no ' + data['data']['type'] + ' please add some.' );
+              console.log( obj.message );
+              alert( 'The address ' + data['street'] + ' ' + data['city'] + ' ' + data['state'] + ', ' + data['zip'] + ' could not be found.  Please check the address and be sure you entered it exactly as listed by the postal service. (HINT: Use Google Maps )' );
+              $('#wpwrap').removeClass('progress');
+              return false;
+            }
+          }
+          else {
+          	alert(  );
+            return false;
+          }
+        });
+      }
+    });
+  </script>
+	<?php
+}
+function ssc_location_update_form_callback( ) {
+	global $wpdb;
+  $ret_val = array( 'type' => 'error', 'message' => 'Nothing received.');
+  /*
+  print '<pre>';
+  print_r( $_POST );
+  print '</pre>';
+  echo $_POST['zip'];
+  $posted = $_POST['data'];
+  /**/
+	$address = 'street=' . str_replace( ' ', '+', $_POST['street'] ) . '&state=' . str_replace(' ', '+', $_POST['state'] ) . '&postalcode=' . urlencode( $_POST['zip'] );
+	$query = '&country=us&format=json&countrycodes=us&polygon=0&addressdetails=0&' . $address;
+	$output = json_decode( file_get_contents( 'http://nominatim.openstreetmap.org/search?' . $query ) );
+	if ( $output[0]->lat ){
+  	update_option( 'ssc_admin_location_settings_lat', $output[0]->lat );
+  	update_option( 'ssc_admin_location_settings_lon', $output[0]->lon );
+  	if ( ssc_update_markers() == true ) {
+  	  $ret_val['type'] = 'success';
+  	  $ret_val['message'] = 'Your location has been added to the map.'; // Latitude = ' . $output[0]->lat . ' Longitude = ' . $output[0]->lon ;
+    }
+    else {
+    	$ret_val['message'] = 'Could not validate.  Please try again.';
+    }
+  }
+  else{
+  	$ret_val['message'] = 'Could not validate address.';
+  }
+  echo json_encode($ret_val);
+  die();
+}
 /* 
  * settings functions
  */
@@ -688,4 +526,171 @@ $us_state_abbrevs_names = array(
 	);
   return $us_state_abbrevs_names;
 }
+global $ssc_location_options;
+$ssc_location_options = array(
+  'settings' => array(
+    array(
+      'group_name' => 'contact',
+      'group_title' => 'Contact',
+      'group_description' => 'Enter contact information.',
+      'group_section' => 'ssc_location_contact',
+      'group_fields' => array(
+        array(
+          'name' => 'phone',
+          'title' => 'Phone Number',
+          'type' => 'text',
+          ),
+        array(
+          'name' => 'street',
+          'title' => 'Street',
+          'type' => 'text',
+          ),
+        array(
+          'name' => 'city',
+          'title' => 'City',
+          'type' => 'text',
+          ),
+        array(
+          'name' => 'zip',
+          'title' => 'ZIP',
+          'type' => 'text',
+          ),
+        array(
+          'name' => 'state',
+          'title' => 'State',
+          'type' => 'select',
+          'options' => 'us_state_abbrevs_names',
+          ),
+        /*
+        array(
+          'name' => 'lat',
+          'title' => 'Latitude',
+          'type' => 'hidden',
+          ),
+        array(
+          'name' => 'lon',
+          'title' => 'Longitude',
+          'type' => 'hidden',
+          ),
+/**/
+        ),
+      ),
+    array(
+      'group_name' => 'socialmedia',
+      'group_title' => 'Social Media',
+      'group_description' => 'Add social media links.',
+      'group_section' => 'ssc_location_socialmedia',
+      'group_fields' => array(
+        array(
+          'name' => 'facebook',
+          'title' => 'Facebook',
+          'type' => 'text',
+          ),
+        array(
+          'name' => 'twitter',
+          'title' => 'Twitter',
+          'type' => 'text',
+          ),
+        array(
+          'name' => 'linkedin',
+          'title' => 'LinkedIn',
+          'type' => 'text',
+          ),
+        array(
+          'name' => 'google',
+          'title' => 'Google Plus',
+          'type' => 'text',
+          ),
+        array(
+          'name' => 'youtube',
+          'title' => 'YouTube',
+          'type' => 'text',
+          ),
+        array(
+          'name' => 'flickr',
+          'title' => 'Flickr',
+          'type' => 'text',
+          ),
+        ),
+      ),    
+    array(
+      'group_name' => 'business_hours',
+      'group_title' => 'Business Hours',
+      'group_description' => 'Enter the business hours',
+      'group_section' => 'ssc_location_business_hours',
+      'group_fields' => array(
+        array(
+          'name' => 'monday_open',
+          'title' => 'Monday Open',
+          'type' => 'time',
+          ),
+        array(
+          'name' => 'monday_close',
+          'title' => 'Monday Close',
+          'type' => 'time',
+          ),
+        array(
+          'name' => 'tuesday_open',
+          'title' => 'Tuesday Open',
+          'type' => 'time',
+          ),
+        array(
+          'name' => 'tuesday_close',
+          'title' => 'Tuesday Close',
+          'type' => 'time',
+          ),
+        array(
+          'name' => 'wednesday_open',
+          'title' => 'Wednesday Open',
+          'type' => 'time',
+          ),
+        array(
+          'name' => 'wednesday_close',
+          'title' => 'Wednesday Close',
+          'type' => 'time',
+          ),
+        array(
+          'name' => 'thursday_open',
+          'title' => 'Thursday Open',
+          'type' => 'time',
+          ),
+        array(
+          'name' => 'thursday_close',
+          'title' => 'Thursday Close',
+          'type' => 'time',
+          ),
+        array(
+          'name' => 'friday_open',
+          'title' => 'Friday Open',
+          'type' => 'time',
+          ),
+        array(
+          'name' => 'friday_close',
+          'title' => 'Friday Close',
+          'type' => 'time',
+          ),
+        array(
+          'name' => 'saturday_open',
+          'title' => 'Saturday Open',
+          'type' => 'time',
+          ),
+        array(
+          'name' => 'saturday_close',
+          'title' => 'Saturday Close',
+          'type' => 'time',
+          ),
+        array(
+          'name' => 'sunday_open',
+          'title' => 'Sunday Open',
+          'type' => 'time',
+          ),
+        array(
+          'name' => 'sunday_close',
+          'title' => 'Sunday Close',
+          'type' => 'time',
+          ),
+        ),
+      ),
+    ),
+  );
 ?>

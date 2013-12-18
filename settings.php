@@ -15,26 +15,29 @@ if(!class_exists('SSC_Locations_Settings')) {
 			  $group_name = $settings_group['group_name'];
   			$group_title = $settings_group['group_title'];
 			  $group_section = $settings_group['group_section'];
+			  $section_name = 'ssc_admin_' . $group_name . '_settings_section_' . $group_section;
 			  add_settings_section(
-  				'ssc_admin_' . $group_name . '_settings_section',
+  				$section_name,
 	  			$group_title,
 		  		array( &$this, 'ssc_admin_settings_section_callback' ),
 		  		$group_section
 	  			);			
-		  	foreach ($settings_group['group_fields'] as $fields) {
+		  	foreach ( $settings_group['group_fields'] as $fields ) {
 		  		$args = array();
 		  		$args = $fields;
 		  		$args['group_name'] = $group_name;
 		  		$args['group_section'] = $group_section;
+		  		$field_name = 'ssc_admin_' . $group_name . '_settings_' . $fields['name'];
 			  	add_settings_field(
-			  		'ssc_admin_' . $group_name . '_settings_' . $fields['name'],
+			  		$field_name,
 			  		$fields['title'],
 		  			array( &$this, 'ssc_admin_settings_fields_callback' ),
 		  			$group_section,
-		  			'ssc_admin_' . $group_name . '_settings_section',
+		  			$section_name,
 		  			$args
 		  			);
-		  		register_setting( $group_section, 'ssc_admin_' . $group_name . '_settings_' . $fields['name'] );
+			  	$tabs[] = $group_section;
+		  		register_setting( $group_section, $field_name );
 			  }
 	    }
     }
@@ -45,14 +48,16 @@ if(!class_exists('SSC_Locations_Settings')) {
 		  if ( get_option( $field_name ) ) {
 			  echo 'value="' . get_option( $field_name ) . '" ';
 		  }
+		  echo 'class="' . $field_name;
 		  if ( 'time' == $args['type'] ) {
-		  	echo 'class="time" ';
+		  	echo ' time ';
 		  }
-		  echo '/>';
+
+		  echo '"/>';
 	  }
 	  if ( 'select' == $args['type'] ) {
 		  $options = array();
-		  echo '<select name="' . $field_name . '" >';
+		  echo '<select name="' . $field_name . '" class="' . $field_name . '">';
 		  if ( 'us_state_abbrevs_names' == $args['options'] ) {
 			  $options = ssc_us_states();
 		  }
@@ -73,10 +78,10 @@ if(!class_exists('SSC_Locations_Settings')) {
     echo '<p>' . $section_passed['title'] . '</p>';
   }  
     public function add_menu(){
-  	  add_options_page(
+  	  add_menu_page(
   		  'Location Settings',
   		  'Location Information',
-  		  'manage_options',
+  		  'administrator',
   		  'ssc_location_settings',
     		array( &$this, 'ssc_location_settings_page')
     		);
