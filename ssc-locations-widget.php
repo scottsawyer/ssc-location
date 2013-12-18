@@ -22,11 +22,9 @@ function ssc_get_site_count(){
 
 function ssc_get_blog_list ( $args = NULL ) {
 	$sites_list = array();
-	
 	if ( function_exists( 'get_blog_list' )  ){
 		$sites_list = get_blog_list ( $args['offset'], $args['limit'] );
 	}
-
 	else {
 		if ( wp_is_large_network() == false && ( $args['limit'] >= 100 || $args['limit'] == 'all' )  ) {
 			if ( $args['limit'] == 'all' ) {
@@ -35,7 +33,6 @@ function ssc_get_blog_list ( $args = NULL ) {
 			else {
 				$site_args['limit'] = $args['limit'];
 			}
-
 			if ( array_key_exists('network_id', $args ) ) {
 				$sites_args['network_id'] = $args['network_id'];
 			}
@@ -160,7 +157,6 @@ class SSC_Locations_Widget extends WP_Widget {
   	    break;
   	    /**/
   	}
-
     echo $args['after_widget'];
   }
    	public function form( $instance ) {
@@ -217,9 +213,6 @@ class SSC_Locations_Widget extends WP_Widget {
 		  	# code...
 		  }
 		  echo '</select></p>';
-
-
-
 	}
 	public function update( $new_instance, $old_instance ) {
 		$instance = array();
