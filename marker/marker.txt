@@ -1,0 +1,6 @@
+lat	lon	title	description	icon	iconSize	iconOffset
+39.7390893224506	-104.990345323818	Denver	<div class="map-location"><address>1437 N Bannock St<br>CO 80203</address><a href="tel:404-631-6216">404-631-6216</a></div>	http://demos.scottsawyerconsulting.com/charlotte/wp-content/themes/ssc-corner-deli-child/marker.png	50,50	0,-15
+42.653203	-73.75986	Albany	<div class="map-location"><address>198 State St<br>NY 12210</address><a href="tel:4046316216">4046316216</a></div>	http://demos.scottsawyerconsulting.com/charlotte/wp-content/themes/ssc-corner-deli-child/marker.png	50,50	0,-15
+39.7837304	-100.4458825		<div class="map-location"><address><br> </address><a href="tel:"></a></div>	http://demos.scottsawyerconsulting.com/charlotte/wp-content/themes/ssc-corner-deli-child/marker.png	50,50	0,-15
+33.7497468421053	-84.3885702105263	Atlanta	<div class="map-location"><address>206 Washington Street SW<br>GA 30334</address><a href="tel:4046316216">4046316216</a></div>	http://demos.scottsawyerconsulting.com/charlotte/wp-content/themes/ssc-corner-deli-child/marker.png	50,50	0,-15
+34.087304625	-84.611373625	Acworth	<div class="map-location"><address>5557 Gibson Drive<br>GA 30102</address><a href="tel:4046316216">4046316216</a></div>	http://demos.scottsawyerconsulting.com/charlotte/wp-content/themes/ssc-corner-deli-child/marker.png	50,50	0,-15

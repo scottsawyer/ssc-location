@@ -1,0 +1,2 @@
+lat	lon	title	description	icon	iconSize	iconOffset
+34.087304625	-84.611373625	Acworth	<div class="map-location"><address>5557 Gibson Drive<br>GA 30102</address><a href="tel:4046316216">4046316216</a></div>	http://www.scottsawyerconsulting.com/sites/all/themes/sscblck/logo.png	30,30	0,-15

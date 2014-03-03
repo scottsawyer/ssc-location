@@ -1,0 +1,2 @@
+lat	lon	title	description	icon	iconSize	iconOffset
+39.7837304	-100.4458825		<div class="map-location"><address><br> </address><a href="tel:"></a></div>	http://www.scottsawyerconsulting.com/sites/all/themes/sscblck/logo.png	30,30	0,-15
