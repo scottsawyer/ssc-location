@@ -87,7 +87,7 @@ class SSC_Locations_Widget extends WP_Widget {
   		  	print '</pre>';
   		  	/**/
     		  	foreach ($site_options[$blog['blog_id']] as $key => $value) {
-    		  		if ( is_array( $value ) ) {
+            	if ( is_array( $value ) ) {
     		  			echo '<li><a href="' . $value['value'] . '" class="' . $value['name'] . '">' . $value['title'] . '</a></li>';
     		  		}
   	  	  	}
@@ -152,12 +152,8 @@ class SSC_Locations_Widget extends WP_Widget {
 		  		echo 'selected';
 		  	}
 		  	echo '>' . get_blog_details( $sites['blog_id'])->blogname . '</option>';
-		  	# code...
 		  }
 		  echo '</select></p>';
-
-
-
 	}
 	public function update( $new_instance, $old_instance ) {
 		$instance = array();
